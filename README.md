@@ -45,6 +45,36 @@ If EMPLOYEE or ADDRESS is down/slow, the gateway's circuit breaker returns a fal
 message ("Employee Service is down. Please try again later.") instead of hanging.
 ```
 
+## Why these patterns
+
+**JWT auth at the gateway (not in each service).** AUTH owns identity — it validates
+credentials with Spring Security (BCrypt-hashed passwords) and issues a signed JJWT token.
+Every other request enters through the gateway, where `AuthFilter` checks the
+`Authorization: Bearer <token>` header before routing. The `/auth/register-user` and
+`/auth/generate-token` paths are open (see `Validator.java`); everything under
+`/employees/**` and `/addresses/**` needs a valid token. Doing it once at the edge means
+the business services stay focused on their domain instead of each re-implementing security —
+and an expired or forged token gets rejected with 401 before it can touch any downstream service.
+
+**Circuit breakers + Resilience4j.** In a chain like gateway → employee → address, one slow
+service can hold threads across the whole chain until everything piles up and falls over
+together. Each gateway route has a Resilience4j circuit breaker (`EMPLOYEE-SERVICE`,
+`ADDRESS-SERVICE`) with a 5-second time limiter: if calls start failing or timing out, the
+breaker opens and requests short-circuit straight to a fallback endpoint
+(`FallbackController` — e.g. "Address Service is down. Please try again later.") instead of
+waiting. Breaker state is visible through Actuator (`health`, `circuitbreakers`), so you can
+watch it go CLOSED → OPEN → HALF_OPEN as the downstream service recovers. I picked
+count-based sliding windows (5 calls, 50% failure threshold) so the behavior is easy to demo:
+stop EMPLOYEE, hit the gateway a few times, and you will see the fallback kick in.
+
+**Feign with a custom error decoder.** EMPLOYEE and ADDRESS call each other with OpenFeign
+declarative clients (`AddressClient`, `EmployeeClient`), so the call sites look like plain
+method calls while Feign handles HTTP, serialization, and error mapping. The custom
+`ErrorDecoder` translates downstream failures into domain exceptions — for example a 503 from
+a dead service becomes "service is down" rather than leaking a raw Feign stack trace to the
+caller. One honest caveat, documented above: a hard connection-refused doesn't arrive as a
+503, so that path still needs a `RetryableException` mapping to be fully clean.
+
 ## Running it
 
 Prerequisites: JDK 17, Maven (or use the included `mvnw` wrappers), MySQL running locally.
