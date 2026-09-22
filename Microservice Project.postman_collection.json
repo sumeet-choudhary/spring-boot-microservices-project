@@ -1,9 +1,9 @@
 {
 	"info": {
-		"_postman_id": "b6ff40be-a5f5-457e-b4bc-19a2f7693b34",
+		"_postman_id": "524b6b05-b849-4074-b1cd-38b1285bd973",
 		"name": "Microservice Project",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "25370918"
+		"_exporter_id": "17972144"
 	},
 	"item": [
 		{
@@ -16,7 +16,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"empName\": \"Manish\",\r\n    \"empEmail\": \"manish@gmail.com\",\r\n    \"empCode\": \"CODE3\",\r\n    \"companyName\": \"TCS\"\r\n}",
+							"raw": "{\n    \"empName\" : \"bharat\",\n    \"empCode\" : \"200\", \n    \"empEmail\" : \"bharatchoudhary@gmail.com\",\n    \"companyName\" : \"TCS\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -38,13 +38,13 @@
 					"response": []
 				},
 				{
-					"name": "Update Employee",
+					"name": "Udpate Employee",
 					"request": {
 						"method": "PUT",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"id\": 2,\r\n    \"empName\": \"Manish Singh\",\r\n    \"empEmail\": \"manish@gmail.com\",\r\n    \"empCode\": \"CODE3\",\r\n    \"companyName\": \"TCS\"\r\n}",
+							"raw": "{\n    \"id\" : \"3\",\n    \"empName\" : \"hero\",\n    \"empCode\" : \"400\", \n    \"empEmail\" : \"herochoudhary@gmail.com\",\n    \"companyName\" : \"dell\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -52,7 +52,7 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:8081/employees/update/2",
+							"raw": "localhost:8081/employees/update/3",
 							"host": [
 								"localhost"
 							],
@@ -60,7 +60,7 @@
 							"path": [
 								"employees",
 								"update",
-								"2"
+								"3"
 							]
 						}
 					},
@@ -68,32 +68,28 @@
 				},
 				{
 					"name": "Get Single Employee",
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
 					"request": {
 						"method": "GET",
 						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
 						"url": {
-							"raw": "localhost:8081/employees/5",
+							"raw": "localhost:8081/employees/1",
 							"host": [
 								"localhost"
 							],
 							"port": "8081",
 							"path": [
 								"employees",
-								"5"
+								"1"
 							]
 						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Employees",
+					"request": {
+						"method": "GET",
+						"header": []
 					},
 					"response": []
 				},
@@ -102,17 +98,8 @@
 					"request": {
 						"method": "DELETE",
 						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"id\": 1,\r\n    \"empName\": \"satish singh\",\r\n    \"empEmail\": \"satishsingh@gmail.com\",\r\n    \"empCode\": \"CODE2\",\r\n    \"companyName\": \"Wipro\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
 						"url": {
-							"raw": "localhost:8081/employees/delete/3",
+							"raw": "localhost:8081/employees/delete/2",
 							"host": [
 								"localhost"
 							],
@@ -120,67 +107,7 @@
 							"path": [
 								"employees",
 								"delete",
-								"3"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get All Employee",
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
-					"request": {
-						"method": "GET",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"id\": 1,\r\n    \"empName\": \"satish singh\",\r\n    \"empEmail\": \"satishsingh@gmail.com\",\r\n    \"empCode\": \"CODE2\",\r\n    \"companyName\": \"Wipro\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "localhost:8081/employees/all",
-							"host": [
-								"localhost"
-							],
-							"port": "8081",
-							"path": [
-								"employees",
-								"all"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "get by emp code and company name",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "localhost:8081/employees/get-by-emp-code-and-company-name?empCode=CODE2&companyName=Wipro",
-							"host": [
-								"localhost"
-							],
-							"port": "8081",
-							"path": [
-								"employees",
-								"get-by-emp-code-and-company-name"
-							],
-							"query": [
-								{
-									"key": "empCode",
-									"value": "CODE2"
-								},
-								{
-									"key": "companyName",
-									"value": "Wipro"
-								}
+								"2"
 							]
 						}
 					},
@@ -192,13 +119,13 @@
 			"name": "Address",
 			"item": [
 				{
-					"name": "save address",
+					"name": "Save Address",
 					"request": {
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"empId\": 11111,\r\n  \"addressRequestDtoList\": [\r\n    {\r\n      \"street\": \"123 Main Street\",\r\n      \"pinCode\": 560001,\r\n      \"city\": \"Bengaluru\",\r\n      \"country\": \"India\",\r\n      \"addressType\": \"PERMANENT\"\r\n    },\r\n    {\r\n      \"street\": \"456 Corporate Avenue\",\r\n      \"pinCode\": 400001,\r\n      \"city\": \"Mumbai\",\r\n      \"country\": \"India\",\r\n      \"addressType\": \"TEMPORARY\"\r\n    }\r\n  ]\r\n}\r\n",
+							"raw": "{\n    \"empId\" : 1,\n    \"addressRequestDtoList\" : [\n        {\n            \"street\" : \"Achole Road\",\n            \"pinCode\" : 401,\n            \"city\" : \"Mumbai\",\n            \"country\" : \"India\",\n            \"addressType\" : \"PERMANENT\"\n        },\n        {\n            \"street\" : \"VPN Road\",\n            \"pinCode\" : 101,\n            \"city\" : \"Mumbai\",\n            \"country\" : \"India\",\n            \"addressType\" : \"TEMPORARY\"\n        }\n    ]\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -220,13 +147,51 @@
 					"response": []
 				},
 				{
-					"name": "update",
+					"name": "Get single Address",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8082/addresses/2",
+							"host": [
+								"localhost"
+							],
+							"port": "8082",
+							"path": [
+								"addresses",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all addresses",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8082/addresses/all-address",
+							"host": [
+								"localhost"
+							],
+							"port": "8082",
+							"path": [
+								"addresses",
+								"all-address"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Address",
 					"request": {
 						"method": "PUT",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"empId\": 1,\r\n    \"addressRequestDtoList\": [\r\n        {\r\n            \"id\": 1,\r\n            \"street\": \"12345 Main Street\",\r\n            \"pinCode\": 560002,\r\n            \"city\": \"Bengaluruuu\",\r\n            \"country\": \"India\",\r\n            \"addressType\": \"TEMPORARY\"\r\n        },\r\n        {\r\n            \"street\": \"Royal City\",\r\n            \"pinCode\": 226002,\r\n            \"city\": \"Lucknow\",\r\n            \"country\": \"India\",\r\n            \"addressType\": \"PERMANENT\"\r\n        }\r\n    ]\r\n}",
+							"raw": "{\n    \"empId\" : 1,\n    \"addressRequestDtoList\" : [\n        {\n            \"id\" : 5,\n            \"street\" : \"Achole Road\",\n            \"pinCode\" : 9090,\n            \"city\" : \"Bengaluru\",\n            \"country\" : \"India\",\n            \"addressType\" : \"PERMANENT\"\n        },\n        {\n            \"street\" : \"JB Road\",\n            \"pinCode\" : 101,\n            \"city\" : \"Karnataka\",\n            \"country\" : \"India\",\n            \"addressType\" : \"TEMPORARY\"\n        }\n    ]\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -248,45 +213,27 @@
 					"response": []
 				},
 				{
-					"name": "get all address",
+					"name": "Delete address",
 					"request": {
-						"method": "GET",
+						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "localhost:8082/addresses/all-address",
+							"raw": "localhost:8082/addresses/delete/7",
 							"host": [
 								"localhost"
 							],
 							"port": "8082",
 							"path": [
 								"addresses",
-								"all-address"
+								"delete",
+								"7"
 							]
 						}
 					},
 					"response": []
 				},
 				{
-					"name": "get single address",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "localhost:8082/addresses/3",
-							"host": [
-								"localhost"
-							],
-							"port": "8082",
-							"path": [
-								"addresses",
-								"3"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "get addresses by empId",
+					"name": "Get address by EmpId",
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -306,22 +253,10 @@
 					"response": []
 				},
 				{
-					"name": "delete address by id",
+					"name": "New Request",
 					"request": {
-						"method": "DELETE",
-						"header": [],
-						"url": {
-							"raw": "localhost:8082/addresses/delete/2",
-							"host": [
-								"localhost"
-							],
-							"port": "8082",
-							"path": [
-								"addresses",
-								"delete",
-								"2"
-							]
-						}
+						"method": "GET",
+						"header": []
 					},
 					"response": []
 				}
@@ -331,16 +266,13 @@
 			"name": "Auth",
 			"item": [
 				{
-					"name": "register user",
+					"name": "Register user",
 					"request": {
-						"auth": {
-							"type": "noauth"
-						},
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"firstName\": \"satish\",\r\n    \"lastName\": \"sinhg\",\r\n    \"email\": \"satish@gmail.com\",\r\n    \"username\": \"satish\",\r\n    \"password\": \"satish\",\r\n    \"roles\": \"ADMIN,NORMAL\"\r\n}",
+							"raw": "{\n    \"firstname\" : \"Sumeet\",\n    \"lastname\" : \"Choudhary\",\n    \"email\" : \"sumeet@gmail.com\",\n    \"username\" : \"Sumeet\",\n    \"password\" : \"sumeet0312\",\n    \"roles\" : \"ADMIN,NORMAL\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -368,7 +300,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"username\": \"satish\",\r\n    \"password\": \"satish\"\r\n}",
+							"raw": "{\n    \"username\" : \"Sumeet\",\n    \"password\" : \"sumeet0312\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -392,17 +324,46 @@
 			]
 		},
 		{
-			"name": "API-GATEWAY",
+			"name": "API_Gateway",
 			"item": [
 				{
-					"name": "save employee",
+					"name": "Get Single Employee Copy",
 					"request": {
 						"auth": {
 							"type": "bearer",
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJtYW5pc2giLCJpYXQiOjE3NjA4NTMzMDYsImV4cCI6MTc2MDg1MzYwNiwiZW1haWwiOiJzYXRpc2hAZ21haWwuY29tIn0.0ZR3yzs0SpVgVKQICtNadA3X3BAI_mI7vxW7cGN_AcR9kKCkuwN3m_g0gIq2guWE",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJTdW1lZXQiLCJpYXQiOjE3ODk5OTI0OTAsImV4cCI6MTc4OTk5Mjc5MCwiZW1haWwiOiJzYXRpc2hAZ21haWwuY29tIn0.XDiXwH4W4m4rU_HZNhhR7tTRebKkv58OgLhrEJ9vnfA0J-pavtwMa4h4bL1lOoo8JB21fNObdpg2fxBnBBYQ_A",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:9090/employees/1",
+							"host": [
+								"localhost"
+							],
+							"port": "9090",
+							"path": [
+								"employees",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Save Employee Copy",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJTdW1lZXQiLCJpYXQiOjE3ODk5OTI0OTAsImV4cCI6MTc4OTk5Mjc5MCwiZW1haWwiOiJzYXRpc2hAZ21haWwuY29tIn0.XDiXwH4W4m4rU_HZNhhR7tTRebKkv58OgLhrEJ9vnfA0J-pavtwMa4h4bL1lOoo8JB21fNObdpg2fxBnBBYQ_A",
 									"type": "string"
 								}
 							]
@@ -411,7 +372,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"empName\": \"Sohan\",\r\n    \"empEmail\": \"sohan@gmail.com\",\r\n    \"empCode\": \"CODE6\",\r\n    \"companyName\": \"ABC\"\r\n}",
+							"raw": "{\n    \"empName\" : \"bharat\",\n    \"empCode\" : \"200\", \n    \"empEmail\" : \"bharatchoudhary@gmail.com\",\n    \"companyName\" : \"TCS\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -430,170 +391,23 @@
 							]
 						}
 					},
-					"response": [
-						{
-							"name": "save employee",
-							"originalRequest": {
-								"method": "POST",
-								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": "{\r\n    \"name\": \"Satish\",\r\n    \"companyName\": \"Programming.com\",\r\n    \"empCode\": 111\r\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
-								"url": {
-									"raw": "localhost:9090/employees/save",
-									"host": [
-										"localhost"
-									],
-									"port": "9090",
-									"path": [
-										"employees",
-										"save"
-									]
-								}
-							},
-							"status": "Created",
-							"code": 201,
-							"_postman_previewlanguage": "json",
-							"header": [
-								{
-									"key": "transfer-encoding",
-									"value": "chunked"
-								},
-								{
-									"key": "Content-Type",
-									"value": "application/json"
-								},
-								{
-									"key": "Date",
-									"value": "Sat, 02 Aug 2025 07:02:18 GMT"
-								}
-							],
-							"cookie": [],
-							"body": "{\n    \"id\": 7,\n    \"name\": \"Satish\",\n    \"companyName\": \"Programming.com\",\n    \"empCode\": 111\n}"
-						}
-					]
+					"response": []
 				},
 				{
-					"name": "get employee",
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
+					"name": "Get All Employees Copy",
 					"request": {
 						"auth": {
 							"type": "bearer",
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJtYW5pc2giLCJpYXQiOjE3NjA4NzE5OTYsImV4cCI6MTc2MDg3MjI5NiwiZW1haWwiOiJzYXRpc2hAZ21haWwuY29tIn0.Sf6FgKp3wipJNsTYAaOaQk1HHRh7tbhyR4P7_eao068X2ERlkF5Chq3yMEd2YYgd",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJTdW1lZXQiLCJpYXQiOjE3ODk5OTI0OTAsImV4cCI6MTc4OTk5Mjc5MCwiZW1haWwiOiJzYXRpc2hAZ21haWwuY29tIn0.XDiXwH4W4m4rU_HZNhhR7tTRebKkv58OgLhrEJ9vnfA0J-pavtwMa4h4bL1lOoo8JB21fNObdpg2fxBnBBYQ_A",
 									"type": "string"
 								}
 							]
 						},
 						"method": "GET",
 						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "localhost:9090/employees/1",
-							"host": [
-								"localhost"
-							],
-							"port": "9090",
-							"path": [
-								"employees",
-								"1"
-							]
-						}
-					},
-					"response": [
-						{
-							"name": "get employee",
-							"originalRequest": {
-								"method": "GET",
-								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": "{\r\n    \"name\": \"Rohit\",\r\n    \"companyName\": \"Amazon\",\r\n    \"empCode\": 112\r\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
-								"url": {
-									"raw": "localhost:9090/employees/6",
-									"host": [
-										"localhost"
-									],
-									"port": "9090",
-									"path": [
-										"employees",
-										"6"
-									]
-								}
-							},
-							"status": "OK",
-							"code": 200,
-							"_postman_previewlanguage": "json",
-							"header": [
-								{
-									"key": "transfer-encoding",
-									"value": "chunked"
-								},
-								{
-									"key": "Content-Type",
-									"value": "application/json"
-								},
-								{
-									"key": "Date",
-									"value": "Sat, 02 Aug 2025 07:01:35 GMT"
-								}
-							],
-							"cookie": [],
-							"body": "{\n    \"id\": 6,\n    \"name\": \"Rohit\",\n    \"companyName\": \"Amazon\",\n    \"empCode\": 112,\n    \"address\": {\n        \"id\": 3,\n        \"city\": \"Lucknow\",\n        \"state\": \"Uttar Pradesh\",\n        \"zipCode\": \"226002\"\n    }\n}"
-						}
-					]
-				},
-				{
-					"name": "get all employee",
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJtYW5pc2giLCJpYXQiOjE3NjA4NTgyNzcsImV4cCI6MTc2MDg1ODU3NywiZW1haWwiOiJzYXRpc2hAZ21haWwuY29tIn0.z34zbujEzclFb_kUBviC9NQO_hjdMAZfCTcAeUJfwdWhWTTgMzfWt9Zk7__TXNQG",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
 						"url": {
 							"raw": "localhost:9090/employees/all",
 							"host": [
@@ -606,161 +420,16 @@
 							]
 						}
 					},
-					"response": [
-						{
-							"name": "get employee",
-							"originalRequest": {
-								"method": "GET",
-								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": "{\r\n    \"name\": \"Rohit\",\r\n    \"companyName\": \"Amazon\",\r\n    \"empCode\": 112\r\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
-								"url": {
-									"raw": "localhost:9090/employees/6",
-									"host": [
-										"localhost"
-									],
-									"port": "9090",
-									"path": [
-										"employees",
-										"6"
-									]
-								}
-							},
-							"status": "OK",
-							"code": 200,
-							"_postman_previewlanguage": "json",
-							"header": [
-								{
-									"key": "transfer-encoding",
-									"value": "chunked"
-								},
-								{
-									"key": "Content-Type",
-									"value": "application/json"
-								},
-								{
-									"key": "Date",
-									"value": "Sat, 02 Aug 2025 07:01:35 GMT"
-								}
-							],
-							"cookie": [],
-							"body": "{\n    \"id\": 6,\n    \"name\": \"Rohit\",\n    \"companyName\": \"Amazon\",\n    \"empCode\": 112,\n    \"address\": {\n        \"id\": 3,\n        \"city\": \"Lucknow\",\n        \"state\": \"Uttar Pradesh\",\n        \"zipCode\": \"226002\"\n    }\n}"
-						}
-					]
+					"response": []
 				},
 				{
-					"name": "get address",
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
+					"name": "Save Address Copy",
 					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJyYWh1bCIsImlhdCI6MTc2MDI0NTI2NywiZXhwIjoxNzYwMjQ1NTY3LCJlbWFpbCI6InNhdGlzaEBnbWFpbC5jb20ifQ.JmqDHrFTQL3HyZfudhQQscCNudch3ALKEPNf6HKf_d134Id29YhCogOr8H9Esegw",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"name\": \"Rohit\",\r\n    \"companyName\": \"Amazon\",\r\n    \"empCode\": 112\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "localhost:9090/addresses/1",
-							"host": [
-								"localhost"
-							],
-							"port": "9090",
-							"path": [
-								"addresses",
-								"1"
-							]
-						}
-					},
-					"response": [
-						{
-							"name": "get address",
-							"originalRequest": {
-								"method": "GET",
-								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": "{\r\n    \"name\": \"Rohit\",\r\n    \"companyName\": \"Amazon\",\r\n    \"empCode\": 112\r\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
-								"url": {
-									"raw": "localhost:9090/addresses/3",
-									"host": [
-										"localhost"
-									],
-									"port": "9090",
-									"path": [
-										"addresses",
-										"3"
-									]
-								}
-							},
-							"status": "OK",
-							"code": 200,
-							"_postman_previewlanguage": "json",
-							"header": [
-								{
-									"key": "transfer-encoding",
-									"value": "chunked"
-								},
-								{
-									"key": "Content-Type",
-									"value": "application/json"
-								},
-								{
-									"key": "Date",
-									"value": "Sat, 02 Aug 2025 07:01:51 GMT"
-								}
-							],
-							"cookie": [],
-							"body": "{\n    \"id\": 3,\n    \"city\": \"Lucknow\",\n    \"state\": \"Uttar Pradesh\",\n    \"zipCode\": \"226002\",\n    \"employeeId\": 6\n}"
-						}
-					]
-				},
-				{
-					"name": "save address",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJtYW5pc2giLCJpYXQiOjE3NjA4NzEyMDMsImV4cCI6MTc2MDg3MTUwMywiZW1haWwiOiJzYXRpc2hAZ21haWwuY29tIn0.ccX-YsDtYHxhE9ChQQ35Ci_7G-ScVCD5XfVcIbDz3aqIu5gDHkqtlLGAKJO3Anu1",
-									"type": "string"
-								}
-							]
-						},
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"empId\": 1,\r\n  \"addressRequestDtoList\": [\r\n    {\r\n      \"street\": \"123465\",\r\n      \"pinCode\": 111345,\r\n      \"city\": \"Barabanki\",\r\n      \"country\": \"India\",\r\n      \"addressType\": \"PERMANENT\"\r\n    }\r\n  ]\r\n}\r\n",
+							"raw": "{\n    \"empId\" : 1,\n    \"addressRequestDtoList\" : [\n        {\n            \"street\" : \"Achole Road\",\n            \"pinCode\" : 401,\n            \"city\" : \"Mumbai\",\n            \"country\" : \"India\",\n            \"addressType\" : \"PERMANENT\"\n        },\n        {\n            \"street\" : \"VPN Road\",\n            \"pinCode\" : 101,\n            \"city\" : \"Mumbai\",\n            \"country\" : \"India\",\n            \"addressType\" : \"TEMPORARY\"\n        }\n    ]\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -779,82 +448,32 @@
 							]
 						}
 					},
-					"response": [
-						{
-							"name": "save address",
-							"originalRequest": {
-								"method": "POST",
-								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": "{\r\n    \"city\": \"Test\",\r\n    \"state\": \"Uttar Pradesh\",\r\n    \"zipCode\": \"226002\",\r\n    \"employeeId\": 7\r\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
-								"url": {
-									"raw": "localhost:9090/addresses/save",
-									"host": [
-										"localhost"
-									],
-									"port": "9090",
-									"path": [
-										"addresses",
-										"save"
-									]
-								}
-							},
-							"status": "Created",
-							"code": 201,
-							"_postman_previewlanguage": "json",
-							"header": [
-								{
-									"key": "transfer-encoding",
-									"value": "chunked"
-								},
-								{
-									"key": "Content-Type",
-									"value": "application/json"
-								},
-								{
-									"key": "Date",
-									"value": "Sat, 02 Aug 2025 07:02:48 GMT"
-								}
-							],
-							"cookie": [],
-							"body": "{\n    \"id\": 4,\n    \"city\": \"Test\",\n    \"state\": \"Uttar Pradesh\",\n    \"zipCode\": \"226002\",\n    \"employeeId\": 7\n}"
-						}
-					]
+					"response": []
 				},
 				{
-					"name": "get all addresses",
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
+					"name": "Get single Address Copy",
 					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJtYW5pc2giLCJpYXQiOjE3NjA4NzE5OTYsImV4cCI6MTc2MDg3MjI5NiwiZW1haWwiOiJzYXRpc2hAZ21haWwuY29tIn0.Sf6FgKp3wipJNsTYAaOaQk1HHRh7tbhyR4P7_eao068X2ERlkF5Chq3yMEd2YYgd",
-									"type": "string"
-								}
-							]
-						},
 						"method": "GET",
 						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n  \"empId\": 1,\r\n  \"addressRequestDtoList\": [\r\n    {\r\n      \"street\": \"123465\",\r\n      \"pinCode\": 111345,\r\n      \"city\": \"Barabanki\",\r\n      \"country\": \"India\",\r\n      \"addressType\": \"PERMANENT\"\r\n    }\r\n  ]\r\n}\r\n",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
+						"url": {
+							"raw": "localhost:9090/addresses/2",
+							"host": [
+								"localhost"
+							],
+							"port": "9090",
+							"path": [
+								"addresses",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all addresses Copy",
+					"request": {
+						"method": "GET",
+						"header": [],
 						"url": {
 							"raw": "localhost:9090/addresses/all-address",
 							"host": [
@@ -864,112 +483,6 @@
 							"path": [
 								"addresses",
 								"all-address"
-							]
-						}
-					},
-					"response": [
-						{
-							"name": "save address",
-							"originalRequest": {
-								"method": "POST",
-								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": "{\r\n    \"city\": \"Test\",\r\n    \"state\": \"Uttar Pradesh\",\r\n    \"zipCode\": \"226002\",\r\n    \"employeeId\": 7\r\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
-								"url": {
-									"raw": "localhost:9090/addresses/save",
-									"host": [
-										"localhost"
-									],
-									"port": "9090",
-									"path": [
-										"addresses",
-										"save"
-									]
-								}
-							},
-							"status": "Created",
-							"code": 201,
-							"_postman_previewlanguage": "json",
-							"header": [
-								{
-									"key": "transfer-encoding",
-									"value": "chunked"
-								},
-								{
-									"key": "Content-Type",
-									"value": "application/json"
-								},
-								{
-									"key": "Date",
-									"value": "Sat, 02 Aug 2025 07:02:48 GMT"
-								}
-							],
-							"cookie": [],
-							"body": "{\n    \"id\": 4,\n    \"city\": \"Test\",\n    \"state\": \"Uttar Pradesh\",\n    \"zipCode\": \"226002\",\n    \"employeeId\": 7\n}"
-						}
-					]
-				},
-				{
-					"name": "register user Copy",
-					"request": {
-						"auth": {
-							"type": "noauth"
-						},
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"firstName\": \"manish\",\r\n    \"lastName\": \"singh\",\r\n    \"email\": \"manish@gmail.com\",\r\n    \"username\": \"manish\",\r\n    \"password\": \"manish\",\r\n    \"roles\": \"ADMIN,NORMAL\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "localhost:9090/auth/register-user",
-							"host": [
-								"localhost"
-							],
-							"port": "9090",
-							"path": [
-								"auth",
-								"register-user"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "generate token Copy",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"username\": \"manish\",\r\n    \"password\": \"manish\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "localhost:9090/auth/generate-token",
-							"host": [
-								"localhost"
-							],
-							"port": "9090",
-							"path": [
-								"auth",
-								"generate-token"
 							]
 						}
 					},
