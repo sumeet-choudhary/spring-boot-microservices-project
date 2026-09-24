@@ -3,6 +3,7 @@ package com.employee.service.impl;
 import com.commomlib.exception.BadRequestException;
 import com.commomlib.exception.ResourceNotFoundException;
 import com.employee.client.AddressClient;
+import com.employee.events.EmployeeEventPublisher;
 import com.employee.model.dto.AddressDto;
 import com.employee.model.dto.EmployeeDto;
 import com.employee.model.entity.Employee;
@@ -26,6 +27,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     private final EmployeeRepository employeeRepository;
     private final ModelMapper modelMapper;
     private final AddressClient addressClient;
+    private final EmployeeEventPublisher eventPublisher;
 
     @Value("${greeting}")
     private String greeting;
@@ -35,10 +37,12 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     public EmployeeServiceImpl(EmployeeRepository employeeRepository,
                                ModelMapper modelMapper,
-                               AddressClient addressClient) {
+                               AddressClient addressClient,
+                               EmployeeEventPublisher eventPublisher) {
         this.employeeRepository = employeeRepository;
         this.modelMapper = modelMapper;
         this.addressClient = addressClient;
+        this.eventPublisher = eventPublisher;
     }
 
 
@@ -50,7 +54,9 @@ public class EmployeeServiceImpl implements EmployeeService {
         Employee entity = modelMapper.map(employeeDto, Employee.class);
         entity.setCreatedAt(LocalDateTime.now());
         Employee savedEntity = employeeRepository.save(entity);
-        return modelMapper.map(savedEntity, EmployeeDto.class);
+        EmployeeDto savedDto = modelMapper.map(savedEntity, EmployeeDto.class);
+        eventPublisher.publishCreated(savedDto);
+        return savedDto;
     }
 
     @Override
@@ -65,7 +71,9 @@ public class EmployeeServiceImpl implements EmployeeService {
         Employee entity = modelMapper.map(employeeDto, Employee.class);
         entity.setUpdatedAt(LocalDateTime.now());
         Employee updatedEmployee = employeeRepository.save(entity);
-        return modelMapper.map(updatedEmployee, EmployeeDto.class);
+        EmployeeDto updatedDto = modelMapper.map(updatedEmployee, EmployeeDto.class);
+        eventPublisher.publishUpdated(updatedDto);
+        return updatedDto;
     }
 
     @Override

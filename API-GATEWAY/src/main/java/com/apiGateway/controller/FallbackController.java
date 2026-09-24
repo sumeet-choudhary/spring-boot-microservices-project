@@ -17,4 +17,9 @@ public class FallbackController {
         return Mono.just("Address Service is down. Please try again later.");
     }
 
+    @GetMapping("/notificationServiceFallback")
+    public Mono<String> notificationFallbackMethod(){
+        return Mono.just("Notification Service is down. Please try again later.");
+    }
+
 }
