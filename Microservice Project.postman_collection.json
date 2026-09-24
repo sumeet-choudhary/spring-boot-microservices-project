@@ -489,6 +489,108 @@
 					"response": []
 				}
 			]
+		},
+		{
+			"name": "Notification",
+			"item": [
+				{
+					"name": "Get All Notifications",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "PASTE_JWT_HERE",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:9090/notifications/all",
+							"host": [
+								"localhost"
+							],
+							"port": "9090",
+							"path": [
+								"notifications",
+								"all"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Notifications By EmpId",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "PASTE_JWT_HERE",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:9090/notifications/empId/1",
+							"host": [
+								"localhost"
+							],
+							"port": "9090",
+							"path": [
+								"notifications",
+								"empId",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Send Manual Notification",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "PASTE_JWT_HERE",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "localhost:9090/notifications/send",
+							"host": [
+								"localhost"
+							],
+							"port": "9090",
+							"path": [
+								"notifications",
+								"send"
+							]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"empId\" : 1,\n    \"recipient\" : \"sumeet@gmail.com\",\n    \"message\" : \"Hello from Postman\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						}
+					},
+					"response": []
+				}
+			]
 		}
 	]
 }

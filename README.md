@@ -1,7 +1,7 @@
 # Spring Boot Microservices Project
 
 A working microservices setup built with Spring Boot: service discovery, centralized configuration,
-an API gateway with JWT auth, and three business services talking to each other over REST and Feign.
+an API gateway with JWT auth, and four business services talking to each other over REST, Feign, and Kafka.
 I built this to learn how the pieces fit together in practice — and to have something concrete
 to discuss in interviews beyond textbook definitions.
 
@@ -38,24 +38,20 @@ to discuss in interviews beyond textbook definitions.
 ## Architecture
 
 ```mermaid
-flowchart LR
-    USER["User"] --> GW["API-GATEWAY :9090<br/>JWT AuthFilter<br/>Circuit breakers + fallbacks"]
+flowchart TD
+    USER["User"] --> GW["API-GATEWAY :9090<br/>JWT check • routing • circuit-breaker fallbacks"]
 
-    GW -->|"/auth/**"| AUTH["AUTH :8083<br/>register, login<br/>issues JWT"]
-    GW -->|"/employees/**"| EMP["EMPLOYEE :8081<br/>CRUD + Feign reads"]
-    GW -->|"/addresses/**"| ADDR["ADDRESS :8082<br/>CRUD + Feign validation"]
-    GW -->|"/notifications/**"| NOTIF["NOTIFICATION :8085<br/>Kafka consumer<br/>Redis + MySQL"]
+    GW --> AUTH["AUTH :8083<br/>login → JWT"]
+    GW --> EMP["EMPLOYEE :8081"]
+    GW --> ADDR["ADDRESS :8082"]
+    GW --> NOTIF["NOTIFICATION :8085"]
 
-    EMP <-->|Feign sync| ADDR
+    EMP <-->|"Feign (sync)"| ADDR
+    EMP -->|"Kafka events"| NOTIF
 
-    EMP -->|publishes create/update| KAFKA[("Kafka<br/>employee-events<br/>+ DLQ")]
-    KAFKA -->|consumes at own pace| NOTIF
-
-    NOTIF <--> REDIS[("Redis<br/>dedup keys<br/>snapshots")]
-    AUTH & EMP & ADDR & NOTIF --> MYSQL[("MySQL testDb<br/>users, employees<br/>address, notifications")]
-
-    AUTH & EMP & ADDR & NOTIF & GW --> EUREKA["EUREKA :8761<br/>registry + dashboard"]
-    CFG["CONFIG-SERVER :8888<br/>Git-backed config"] -.-> AUTH & EMP & ADDR & NOTIF & GW
+    NOTIF --- REDIS[("Redis<br/>dedup + cache")]
+    AUTH & EMP & ADDR & NOTIF --- DB[("MySQL<br/>one DB, table per service")]
+    AUTH & EMP & ADDR & NOTIF & GW --- EUR["Eureka :8761<br/>who's alive"]
 ```
 
 Sync calls (gateway → services, Feign) need an answer now — breakers and fallbacks
@@ -66,13 +62,18 @@ events wait safely until consumed. Redis sits beside NOTIFICATION for speed and 
 
 ```
 Client → API-GATEWAY (9090, JWT check)
-           ├─ /auth/**       → AUTH (8083)
-           ├─ /employees/**  → EMPLOYEE (8081)  ──Feign──▶ ADDRESS (8082)
-           └─ /addresses/**  → ADDRESS (8082)   ──Feign──▶ EMPLOYEE (8081, when validation is on)
+           ├─ /auth/**         → AUTH (8083)
+           ├─ /employees/**    → EMPLOYEE (8081)  ──Feign──▶ ADDRESS (8082)
+           ├─ /addresses/**    → ADDRESS (8082)   ──Feign──▶ EMPLOYEE (8081, when validation is on)
+           └─ /notifications/** → NOTIFICATION (8085)
+
+Async: EMPLOYEE ──publishes──▶ Kafka (employee-events) ──consumes──▶ NOTIFICATION
+       (Redis dedup + snapshot, MySQL notifications table)
 
 All services register with EUREKA (8761). Config comes from CONFIG-SERVER (8888).
 If EMPLOYEE or ADDRESS is down/slow, the gateway's circuit breaker returns a fallback
 message ("Employee Service is down. Please try again later.") instead of hanging.
+If NOTIFICATION is down, Kafka holds its events until it recovers — nothing is lost.
 ```
 
 ## Why these patterns
@@ -82,14 +83,14 @@ credentials with Spring Security (BCrypt-hashed passwords) and issues a signed J
 Every other request enters through the gateway, where `AuthFilter` checks the
 `Authorization: Bearer <token>` header before routing. The `/auth/register-user` and
 `/auth/generate-token` paths are open (see `Validator.java`); everything under
-`/employees/**` and `/addresses/**` needs a valid token. Doing it once at the edge means
+`/employees/**`, `/addresses/**`, and `/notifications/**` needs a valid token. Doing it once at the edge means
 the business services stay focused on their domain instead of each re-implementing security —
 and an expired or forged token gets rejected with 401 before it can touch any downstream service.
 
 **Circuit breakers + Resilience4j.** In a chain like gateway → employee → address, one slow
 service can hold threads across the whole chain until everything piles up and falls over
 together. Each gateway route has a Resilience4j circuit breaker (`EMPLOYEE-SERVICE`,
-`ADDRESS-SERVICE`) with a 5-second time limiter: if calls start failing or timing out, the
+`ADDRESS-SERVICE`, `NOTIFICATION-SERVICE`) with a 5-second time limiter: if calls start failing or timing out, the
 breaker opens and requests short-circuit straight to a fallback endpoint
 (`FallbackController` — e.g. "Address Service is down. Please try again later.") instead of
 waiting. Breaker state is visible through Actuator (`health`, `circuitbreakers`), so you can
@@ -107,21 +108,23 @@ caller. One honest caveat, documented above: a hard connection-refused doesn't a
 
 ## Running it
 
-Prerequisites: JDK 17, Maven (or use the included `mvnw` wrappers), MySQL running locally.
+Prerequisites: JDK 17, Maven (or use the included `mvnw` wrappers), MySQL, Kafka, and Redis running locally.
 
 1. Create the database (or let Hibernate create it):
    ```sql
    CREATE DATABASE IF NOT EXISTS testDb;
    ```
-   Tables needed: `employees`, `address`, `users` — with `ddl-auto=update` Hibernate will
+   Tables needed: `employees`, `address`, `users`, `notifications` — with `ddl-auto=update` Hibernate will
    create/adjust them for you on first boot.
-2. Start in this order and wait for each to finish booting:
+2. Start Kafka (`localhost:9092`, topics `employee-events` and `employee-events-dlq`) and Redis (`localhost:6379`).
+3. Start services in this order and wait for each to finish booting:
    1. `EUREKA-SERVER` (8761)
    2. `CONFIG-SERVER` (8888)
    3. `AUTH` (8083)
    4. `EMPLOYEE` (8081) and `ADDRESS` (8082)
-   5. `API-GATEWAY` (9090)
-3. Open `http://localhost:8761` — you should see `AUTH`, `EMPLOYEE`, `ADDRESS`, `API-GATEWAY`
+   5. `NOTIFICATION` (8085)
+   6. `API-GATEWAY` (9090)
+4. Open `http://localhost:8761` — you should see `AUTH`, `EMPLOYEE`, `ADDRESS`, `NOTIFICATION`, `API-GATEWAY`
    under Applications.
 4. A Postman collection (`Microservice Project.postman_collection.json`) is included
    with requests for every endpoint.
@@ -136,15 +139,19 @@ Typical flow: `POST /auth/register-user` → `POST /auth/generate-token` → use
   `PUT /employees/update/{id}`, `DELETE /employees/delete/{id}`
 - Address: `POST /addresses/save`, `GET /addresses/all-address`, `GET /addresses/empId/{empId}`,
   `GET /addresses/{addressId}`, `PUT /addresses/update`, `DELETE /addresses/delete/{addressId}`
-- Gateway fallbacks: `GET /employeeServiceFallback`, `GET /addressServiceFallback`
+- Notification: `POST /notifications/send`, `GET /notifications/all`, `GET /notifications/empId/{empId}`
+- Gateway fallbacks: `GET /employeeServiceFallback`, `GET /addressServiceFallback`, `GET /notificationServiceFallback`
 
 ## If you fork this
 
 Things that are specific to my machine and you will probably want to change:
 
-1. **Database credentials** — `AUTH`, `EMPLOYEE`, and `ADDRESS` each have a
+1. **Database credentials** — `AUTH`, `EMPLOYEE`, `ADDRESS`, and `NOTIFICATION` each have a
    `spring.datasource.url/username/password` in their `application.properties`.
    Point them at your own MySQL (or switch back to H2 for a zero-setup run).
+2. **Kafka and Redis locations** — EMPLOYEE publishes to `localhost:9092`, NOTIFICATION consumes
+   from there and uses Redis at `localhost:6379`. Change `spring.kafka.bootstrap-servers` and
+   `spring.data.redis.host/port` if yours live elsewhere.
 2. **Config Server Git URI** — `CONFIG-SERVER/src/main/resources/application.yml`
    points at my config repo. Replace it with yours.
 3. **JWT secret** — `JwtUtil` in AUTH and API-GATEWAY share a secret key.
