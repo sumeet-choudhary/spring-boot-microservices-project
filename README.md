@@ -38,20 +38,24 @@ to discuss in interviews beyond textbook definitions.
 ## Architecture
 
 ```mermaid
-flowchart TD
-    USER["User"] --> GW["API-GATEWAY :9090<br/>JWT check • routing • circuit-breaker fallbacks"]
+flowchart LR
+    USER["User"] --> GW["API-GATEWAY :9090<br/>JWT AuthFilter<br/>Circuit breakers + fallbacks"]
 
-    GW --> AUTH["AUTH :8083<br/>login → JWT"]
-    GW --> EMP["EMPLOYEE :8081"]
-    GW --> ADDR["ADDRESS :8082"]
-    GW --> NOTIF["NOTIFICATION :8085"]
+    GW -->|"/auth/**"| AUTH["AUTH :8083<br/>register, login<br/>issues JWT"]
+    GW -->|"/employees/**"| EMP["EMPLOYEE :8081<br/>CRUD + Feign reads"]
+    GW -->|"/addresses/**"| ADDR["ADDRESS :8082<br/>CRUD + Feign validation"]
+    GW -->|"/notifications/**"| NOTIF["NOTIFICATION :8085<br/>Kafka consumer<br/>Redis + MySQL"]
 
-    EMP <-->|"Feign (sync)"| ADDR
-    EMP -->|"Kafka events"| NOTIF
+    EMP <-->|Feign sync| ADDR
 
-    NOTIF --- REDIS[("Redis<br/>dedup + cache")]
-    AUTH & EMP & ADDR & NOTIF --- DB[("MySQL<br/>one DB, table per service")]
-    AUTH & EMP & ADDR & NOTIF & GW --- EUR["Eureka :8761<br/>who's alive"]
+    EMP -->|publishes create/update| KAFKA[("Kafka<br/>employee-events<br/>+ DLQ")]
+    KAFKA -->|consumes at own pace| NOTIF
+
+    NOTIF <--> REDIS[("Redis<br/>dedup keys<br/>snapshots")]
+    AUTH & EMP & ADDR & NOTIF --> MYSQL[("MySQL testDb<br/>users, employees<br/>address, notifications")]
+
+    AUTH & EMP & ADDR & NOTIF & GW --> EUREKA["EUREKA :8761<br/>registry + dashboard"]
+    CFG["CONFIG-SERVER :8888<br/>Git-backed config"] -.-> AUTH & EMP & ADDR & NOTIF & GW
 ```
 
 Sync calls (gateway → services, Feign) need an answer now — breakers and fallbacks
