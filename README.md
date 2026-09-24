@@ -12,8 +12,9 @@ to discuss in interviews beyond textbook definitions.
 | EUREKA-SERVER | 8761 | Service discovery. Every service registers here; check the dashboard at `http://localhost:8761` |
 | CONFIG-SERVER | 8888 | Centralized configuration backed by a Git repo                             |
 | AUTH          | 8083 | User registration, login, JWT token generation (Spring Security + JJWT)   |
-| EMPLOYEE      | 8081 | Employee CRUD. Calls ADDRESS over Feign to attach addresses to responses   |
+| EMPLOYEE      | 8081 | Employee CRUD. Calls ADDRESS over Feign; publishes events to Kafka on save/update |
 | ADDRESS       | 8082 | Address CRUD. Optionally validates `empId` against EMPLOYEE before saving  |
+| NOTIFICATION  | 8085 | Consumes Kafka employee events, sends notifications (Redis dedup + cache)  |
 | API-GATEWAY   | 9090 | Single entry point. JWT auth filter, routing, circuit breakers + fallbacks |
 
 ## Tech stack
@@ -29,8 +30,37 @@ to discuss in interviews beyond textbook definitions.
   5s time limiters, health indicators exposed via Actuator
 - **Spring Security + JJWT** — username/password auth in AUTH, `Bearer` tokens enforced at the gateway
 - **Spring Data JPA + Hibernate** — MySQL (`testDb`) in normal use; H2 available for quick local runs
+- **Apache Kafka** — `employee-events` topic: EMPLOYEE publishes on create/update, NOTIFICATION consumes async
+- **Redis** — idempotency keys (no duplicate notifications) + cached employee snapshots
 - **ModelMapper** — entity ↔ DTO mapping
 - **Spring Boot Actuator** — health, metrics, circuit-breaker state
+
+## Architecture
+
+```mermaid
+flowchart LR
+    USER["User"] --> GW["API-GATEWAY :9090<br/>JWT AuthFilter<br/>Circuit breakers + fallbacks"]
+
+    GW -->|"/auth/**"| AUTH["AUTH :8083<br/>register, login<br/>issues JWT"]
+    GW -->|"/employees/**"| EMP["EMPLOYEE :8081<br/>CRUD + Feign reads"]
+    GW -->|"/addresses/**"| ADDR["ADDRESS :8082<br/>CRUD + Feign validation"]
+    GW -->|"/notifications/**"| NOTIF["NOTIFICATION :8085<br/>Kafka consumer<br/>Redis + MySQL"]
+
+    EMP <-->|Feign sync| ADDR
+
+    EMP -->|publishes create/update| KAFKA[("Kafka<br/>employee-events<br/>+ DLQ")]
+    KAFKA -->|consumes at own pace| NOTIF
+
+    NOTIF <--> REDIS[("Redis<br/>dedup keys<br/>snapshots")]
+    AUTH & EMP & ADDR & NOTIF --> MYSQL[("MySQL testDb<br/>users, employees<br/>address, notifications")]
+
+    AUTH & EMP & ADDR & NOTIF & GW --> EUREKA["EUREKA :8761<br/>registry + dashboard"]
+    CFG["CONFIG-SERVER :8888<br/>Git-backed config"] -.-> AUTH & EMP & ADDR & NOTIF & GW
+```
+
+Sync calls (gateway → services, Feign) need an answer now — breakers and fallbacks
+protect them. Async flow (EMPLOYEE → Kafka → NOTIFICATION) needs no answer —
+events wait safely until consumed. Redis sits beside NOTIFICATION for speed and dedup.
 
 ## How it fits together
 
